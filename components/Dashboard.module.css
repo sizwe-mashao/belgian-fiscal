@@ -3,6 +3,9 @@
   max-width: 960px;
   margin: 0 auto;
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .status,
@@ -114,4 +117,126 @@
   font-size: 0.75rem;
   line-height: 1.4;
   color: #6b675f;
+}
+
+.mapSection {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.mapPanel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  padding: 0.75rem;
+  border: 1px solid #d8d4cc;
+  border-radius: 6px;
+  background: #faf9f7;
+}
+
+.mapSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 360px;
+}
+
+.mapRegion {
+  stroke: #fff;
+  stroke-width: 1.25;
+  cursor: pointer;
+  transition: fill 0.15s ease, stroke-width 0.15s ease;
+}
+
+.mapRegion:hover {
+  stroke: #1a1a1a;
+  stroke-width: 1.75;
+}
+
+.mapRegionSelected {
+  stroke: #1a1a1a;
+  stroke-width: 2;
+}
+
+.mapFallback {
+  margin: 0;
+  padding: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #6b675f;
+  text-align: center;
+}
+
+.regionList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.regionListItem {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid #d8d4cc;
+  border-radius: 6px;
+  background: #faf9f7;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.regionListItem:hover {
+  border-color: #b8b3a8;
+  background: #f5f3ef;
+}
+
+.regionListItem:focus-visible {
+  outline: 2px solid #1a1a1a;
+  outline-offset: 2px;
+}
+
+.regionListItemSelected {
+  border-color: #1a1a1a;
+  background: #fff;
+  box-shadow: 0 0 0 1px #1a1a1a;
+}
+
+.regionListName {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #3d3a34;
+}
+
+.regionListTotal {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1a1a1a;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #6b675f;
+}
+
+@media (max-width: 640px) {
+  .mapSection {
+    grid-template-columns: 1fr;
+  }
 }
