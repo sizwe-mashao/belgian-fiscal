@@ -1,12 +1,29 @@
 "use client";
 
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import {
+  BarController,
+  BarElement,
+  CategoryScale,
+  Chart,
+  LinearScale,
+  Tooltip,
+} from "chart.js";
 import { geoMercator, geoPath } from "d3-geo";
 import { feature, merge } from "topojson-client";
 import type { Topology, GeometryCollection, GeometryObject } from "topojson-specification";
 import styles from "./Dashboard.module.css";
 
+Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
+
 export type RegionId = "flanders" | "wallonia" | "brussels";
+
+type Department = {
+  department_id: string;
+  name_en: string;
+  amount_eur_000: number;
+  incomplete: boolean;
+};
 
 type ExpenditureResult = {
   region_id: string;
@@ -14,6 +31,7 @@ type ExpenditureResult = {
   heraldic_color: string;
   total_amount_eur_000: number;
   per_capita_eur: number;
+  by_department: Department[];
 };
 
 type RegionCardData = {
@@ -23,6 +41,7 @@ type RegionCardData = {
   totalEur000: number;
   perCapitaEur: number;
   pctChange: number | null;
+  departments: Department[];
 };
 
 type MapPath = {
@@ -159,6 +178,23 @@ export default function Dashboard() {
   const [mapPaths, setMapPaths] = useState<MapPath[]>([]);
   const [mapError, setMapError] = useState<string | null>(null);
   const [mapLoading, setMapLoading] = useState(true);
+  const chartCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const chartRef = useRef<Chart<"bar"> | null>(null);
+
+  const selectedCard = useMemo(
+    () => cards.find((card) => card.id === selectedRegion) ?? null,
+    [cards, selectedRegion]
+  );
+
+  const topDepartments = useMemo(
+    () => selectedCard?.departments.slice(0, 6) ?? [],
+    [selectedCard]
+  );
+
+  const incompleteDepartments = useMemo(
+    () => topDepartments.filter((dept) => dept.incomplete),
+    [topDepartments]
+  );
 
   const colorById = useMemo(() => {
     const map = new Map<RegionId, string>();
@@ -210,6 +246,7 @@ export default function Dashboard() {
             totalEur000: current.total_amount_eur_000,
             perCapitaEur: current.per_capita_eur,
             pctChange,
+            departments: current.by_department ?? [],
           };
         });
 
@@ -256,6 +293,78 @@ export default function Dashboard() {
     loadMap();
     return () => {
       cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!selectedCard || !chartCanvasRef.current) return;
+
+    const labels = topDepartments.map((dept) =>
+      dept.incomplete ? `${dept.name_en} ⚠` : dept.name_en
+    );
+    const values = topDepartments.map((dept) => dept.amount_eur_000 / 1e6);
+    const color = selectedCard.heraldicColor;
+
+    if (!chartRef.current) {
+      chartRef.current = new Chart(chartCanvasRef.current, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            {
+              data: values,
+              backgroundColor: color,
+              borderWidth: 0,
+              borderSkipped: false,
+            },
+          ],
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const bn = typeof ctx.parsed.x === "number" ? ctx.parsed.x : 0;
+                  return `€${bn.toFixed(1)}bn`;
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: {
+                callback: (value) => `€${Number(value).toFixed(1)}bn`,
+              },
+              grid: { color: "rgba(0, 0, 0, 0.06)" },
+            },
+            y: {
+              grid: { display: false },
+              ticks: {
+                autoSkip: false,
+              },
+            },
+          },
+        },
+      });
+      return;
+    }
+
+    const chart = chartRef.current;
+    chart.data.labels = labels;
+    chart.data.datasets[0].data = values;
+    chart.data.datasets[0].backgroundColor = color;
+    chart.update();
+  }, [selectedCard, topDepartments]);
+
+  useEffect(() => {
+    return () => {
+      chartRef.current?.destroy();
+      chartRef.current = null;
     };
   }, []);
 
@@ -383,6 +492,37 @@ export default function Dashboard() {
             Click a region on the map or in the list to update the breakdown
             below.
           </p>
+
+          {selectedCard && (
+            <section
+              className={styles.chartSection}
+              aria-label="Category spending chart"
+            >
+              <h2 className={styles.chartTitle}>
+                {selectedCard.name} — top spending categories, 2026
+              </h2>
+              <div className={styles.chartWrap}>
+                <canvas ref={chartCanvasRef} />
+              </div>
+              {incompleteDepartments.length > 0 && (
+                <ul className={styles.partialList}>
+                  {incompleteDepartments.map((dept) => (
+                    <li
+                      key={dept.department_id}
+                      className={styles.partialItem}
+                      title="Partial data — some source figures were not numerically reported"
+                    >
+                      <span className={styles.partialBadge} aria-hidden>
+                        ⚠
+                      </span>
+                      <span>{dept.name_en}</span>
+                      <span className={styles.partialTag}>partial data</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
         </>
       )}
     </div>
