@@ -1,0 +1,17 @@
+# dependencies
+node_modules/
+
+# secrets / credentials
+*firebase-adminsdk*.json
+.env
+.env*.local
+
+# build artifacts
+.next/
+build-output.log
+
+# OS files
+.DS_Store
+
+# misc
+*.log
