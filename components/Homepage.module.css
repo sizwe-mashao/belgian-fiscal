@@ -1,0 +1,485 @@
+.page {
+  --page-bg: #eceae1;
+  --panel-bg: #fafaf7;
+  --ink: #1b1b1e;
+  --muted: #6e6c64;
+  --muted-soft: #8a887f;
+  --body: #4a4942;
+  --border: #e4e2d9;
+  --rule: #d8d6cc;
+  --flanders: #d8a118;
+  --wallonia: #b5442a;
+  --brussels: #3b5ba5;
+
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 2rem 1rem;
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--font-work-sans), system-ui, sans-serif;
+}
+
+.page *,
+.page *::before,
+.page *::after {
+  box-sizing: border-box;
+}
+
+.frame {
+  max-width: 900px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--panel-bg);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+}
+
+/* The tricolour rule: Flanders gold, Wallonia rust, Brussels blue, in equal
+   thirds. Full-bleed, so it must stay a direct child of .frame. */
+.divider {
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    #d8a118 0%,
+    #d8a118 33.33%,
+    #b5442a 33.33%,
+    #b5442a 66.66%,
+    #3b5ba5 66.66%,
+    #3b5ba5 100%
+  );
+}
+
+/* ---------- header ---------- */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.875rem 1.75rem;
+  border-bottom: 1px solid var(--ink);
+}
+
+.brand {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.1875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.brandDot {
+  color: var(--muted-soft);
+  font-weight: 400;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  font-size: 0.8125rem;
+}
+
+.navLink {
+  color: var(--ink);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 2px solid var(--flanders);
+}
+
+.navLink:hover {
+  color: var(--body);
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Sections that do not exist yet, shown as pending rather than dead links. */
+.navPending {
+  color: var(--muted-soft);
+  cursor: default;
+}
+
+.langSwitcher {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px 4px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+}
+
+.langButton {
+  margin: 0;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.langButton:hover {
+  color: var(--ink);
+}
+
+.langButton:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.langButtonActive,
+.langButtonActive:hover {
+  background: var(--ink);
+  color: var(--panel-bg);
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  padding: 2.75rem 1.75rem 2.25rem;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.875rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.badgeDot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.heroTitle {
+  margin: 0;
+  max-width: 32rem;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 2.25rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.heroEmphasis {
+  font-style: italic;
+  border-bottom: 3px solid var(--flanders);
+}
+
+.heroBody {
+  max-width: 30rem;
+  margin: 1rem 0 1.375rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--body);
+}
+
+.heroAmount {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.0625rem;
+  color: var(--ink);
+}
+
+.ctaRow {
+  display: flex;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.ctaPrimary,
+.ctaSecondary {
+  display: inline-block;
+  padding: 0.5625rem 1.125rem;
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  text-decoration: none;
+}
+
+.ctaPrimary {
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  color: var(--panel-bg);
+  font-weight: 500;
+}
+
+.ctaPrimary:hover {
+  background: #33333a;
+}
+
+.ctaSecondary {
+  border: 1px solid var(--ink);
+  color: var(--ink);
+}
+
+.ctaSecondary:hover {
+  background: #f1efe6;
+}
+
+.ctaPrimary:focus-visible,
+.ctaSecondary:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.tagRow {
+  list-style: none;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 1.25rem 0 0;
+  padding: 0;
+}
+
+.tag {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: #5c5b53;
+}
+
+/* ---------- how it works ---------- */
+
+.how {
+  padding: 1.875rem 1.75rem;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1.125rem;
+  margin: 0;
+  padding: 0;
+  counter-reset: none;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stepNumber {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.375rem;
+  line-height: 1.2;
+}
+
+.gold {
+  color: var(--flanders);
+}
+
+.rust {
+  color: var(--wallonia);
+}
+
+.blue {
+  color: var(--brussels);
+}
+
+.stepTitle {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-work-sans), system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.stepBody {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: #5c5b53;
+}
+
+/* ---------- latest analysis ---------- */
+
+.latest {
+  padding: 1.875rem 1.75rem;
+}
+
+.latestHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.latestTitle {
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.allArticles {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.allArticles:hover {
+  color: var(--ink);
+}
+
+.cardGrid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.card,
+.cardDisabled {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  height: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.card {
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--ink);
+  box-shadow: 0 2px 0 0 var(--flanders);
+  transform: translateY(-1px);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Not yet published: visibly inert, and out of the tab order because there is
+   nothing to open. */
+.cardDisabled {
+  opacity: 0.55;
+  background: #fcfcf9;
+  cursor: default;
+}
+
+.cardTag {
+  padding: 0.1875rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+}
+
+.tagGold {
+  background: #f5eac9;
+  color: #63470a;
+}
+
+.tagRust {
+  background: #f0dbd4;
+  color: #6b2413;
+}
+
+.tagBlue {
+  background: #dce2ef;
+  color: #1e3563;
+}
+
+.tagMuted {
+  background: #ecebe4;
+  color: #5c5b53;
+}
+
+.cardTitle {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.cardStandfirst {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted-soft);
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.75rem 1.125rem;
+}
+
+.footerText {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 0.75rem;
+  }
+
+  .header,
+  .hero,
+  .how,
+  .latest,
+  .footer {
+    padding-left: 1.125rem;
+    padding-right: 1.125rem;
+  }
+
+  .heroTitle {
+    font-size: 1.75rem;
+  }
+
+  .nav {
+    gap: 0.875rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}
