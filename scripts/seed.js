@@ -10,6 +10,21 @@
 
 const path = require("path");
 const fs = require("fs");
+const { pathToFileURL } = require("url");
+const { spawnSync } = require("child_process");
+
+// slugify lives in lib/slugify.ts — re-exec under Node's TypeScript strip so
+// we import the one shared implementation rather than a near-copy that could
+// drift on accents, ampersands, parentheses or slashes.
+if (!process.execArgv.includes("--experimental-strip-types")) {
+  const result = spawnSync(
+    process.execPath,
+    ["--experimental-strip-types", ...process.argv],
+    { stdio: "inherit" }
+  );
+  process.exit(result.status ?? 1);
+}
+
 const { parse } = require("csv-parse/sync");
 const { initializeApp } = require("firebase-admin/app");
 const { getFirestore } = require("firebase-admin/firestore");
@@ -33,14 +48,6 @@ const REGION_META = {
   brussels: { color: "#3B5BA5", names: { EN: "Brussels-Capital", FR: "Bruxelles-Capitale", NL: "Brussels Hoofdstedelijk Gewest", DE: "Region Brussel-Hauptstadt" } },
   federal: { color: "#5f5e58", names: { EN: "Federal", FR: "Federal", NL: "Federaal", DE: "Federal" } },
 };
-
-function slugify(s) {
-  return s
-    .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
-}
 
 async function readExpenditureRows() {
   const raw = fs.readFileSync(EXPENDITURE_CSV, "utf-8").replace(/^\uFEFF/, "");
@@ -102,7 +109,7 @@ async function seedRegions(popRows) {
   console.log(`Seeded ${regionIds.length} region docs.`);
 }
 
-async function seedDepartments(expRows) {
+async function seedDepartments(expRows, slugify) {
   const categories = [...new Set(expRows.map((r) => r["Broad Category"]))].filter(Boolean);
   const batch = db.batch();
   categories.forEach((cat) => {
@@ -119,7 +126,7 @@ async function seedDepartments(expRows) {
   console.log(`Seeded ${categories.length} department docs.`);
 }
 
-async function seedExpenditure(expRows) {
+async function seedExpenditure(expRows, slugify) {
   const chunkSize = 450;
   let written = 0;
   for (let i = 0; i < expRows.length; i += chunkSize) {
@@ -154,6 +161,10 @@ async function seedExpenditure(expRows) {
 }
 
 async function main() {
+  const { slugify } = await import(
+    pathToFileURL(path.join(__dirname, "../lib/slugify.ts")).href
+  );
+
   console.log("Reading source files...");
   const expRows = await readExpenditureRows();
   const popRows = readPopulationRows();
@@ -163,10 +174,10 @@ async function main() {
   await seedRegions(popRows);
 
   console.log("Seeding departments...");
-  await seedDepartments(expRows);
+  await seedDepartments(expRows, slugify);
 
   console.log("Seeding expenditure...");
-  await seedExpenditure(expRows);
+  await seedExpenditure(expRows, slugify);
 
   console.log("Done.");
 }
