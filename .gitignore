@@ -16,3 +16,5 @@ build-output.log
 # misc
 *.log
 tsconfig.tsbuildinfo
+recovered/
+recovered/
