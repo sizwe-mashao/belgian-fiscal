@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Work_Sans } from "next/font/google";
+import { LanguageProvider } from "@/components/LanguageContext";
+import SiteHeader from "@/components/SiteHeader";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -15,7 +17,7 @@ const workSans = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Belgian fiscal transparency",
+  title: "OpenBudgets.BE",
   description: "Regional and federal expenditure overview for Belgium",
 };
 
@@ -29,7 +31,12 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${workSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <LanguageProvider>
+          <SiteHeader />
+          {children}
+        </LanguageProvider>
+      </body>
     </html>
   );
 }

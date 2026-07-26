@@ -2,22 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useLanguage, type Lang } from "./LanguageContext";
 import styles from "./Homepage.module.css";
-
-type Lang = "EN" | "FR" | "NL" | "DE";
-
-const LANGS: Lang[] = ["EN", "FR", "NL", "DE"];
-
-// The brand mark is bilingual by design and is not translated.
-const BRAND_NL = "Klare Lijn";
-const BRAND_FR = "Ligne Claire";
 
 /**
  * Where the one live article lives. This route does not exist yet — create
- * `app/analysis/flemish-education-line/page.tsx` (or change this constant) or
+ * `app/articles/flemish-education-line/page.tsx` (or change this constant) or
  * the featured card will 404.
  */
-const FEATURED_HREF = "/analysis/flemish-education-line";
+const FEATURED_HREF = "/articles/flemish-education-line";
 
 type ArticleStatus = "live" | "soon";
 
@@ -204,25 +197,6 @@ const UI = {
     NL: "Binnenkort",
     DE: "Demnächst",
   },
-  navAnalysis: {
-    EN: "Analysis",
-    FR: "Analyses",
-    NL: "Analyses",
-    DE: "Analysen",
-  },
-  navDashboard: {
-    EN: "Dashboard",
-    FR: "Tableau de bord",
-    NL: "Dashboard",
-    DE: "Dashboard",
-  },
-  navData: { EN: "Data", FR: "Données", NL: "Data", DE: "Daten" },
-  navMethodology: {
-    EN: "Methodology",
-    FR: "Méthodologie",
-    NL: "Methode",
-    DE: "Methodik",
-  },
   footerData: {
     EN: "Data: official 2025–2026 expenditure budgets (Flanders · Wallonia · Brussels-Capital · federal)",
     FR: "Données : budgets de dépenses officiels 2025-2026 (Flandre · Wallonie · Bruxelles-Capitale · fédéral)",
@@ -329,7 +303,7 @@ function formatHeroAmount(eur000: number, lang: Lang): string {
 }
 
 export default function Homepage() {
-  const [lang, setLang] = useState<Lang>("EN");
+  const { lang } = useLanguage();
   const totalEur000 = useRegionalTotal();
 
   const liveArticles = useMemo(
@@ -345,49 +319,6 @@ export default function Homepage() {
   return (
     <div className={styles.page}>
       <div className={styles.frame}>
-        <header className={styles.header}>
-          <p className={styles.brand}>
-            {BRAND_NL}
-            <span className={styles.brandDot}> · </span>
-            {BRAND_FR}
-          </p>
-
-          <nav className={styles.nav} aria-label="Main">
-            {/* Only built routes are links. The rest are shown as pending
-                rather than as dead links. */}
-            <span className={styles.navPending}>
-              {t("navAnalysis", lang)}
-            </span>
-            <Link className={styles.navLink} href="/dashboard">
-              {t("navDashboard", lang)}
-            </Link>
-            <span className={styles.navPending}>{t("navData", lang)}</span>
-            <span className={styles.navPending}>
-              {t("navMethodology", lang)}
-            </span>
-
-            <span
-              className={styles.langSwitcher}
-              role="group"
-              aria-label="Language"
-            >
-              {LANGS.map((code) => (
-                <button
-                  key={code}
-                  type="button"
-                  className={`${styles.langButton}${lang === code ? ` ${styles.langButtonActive}` : ""}`}
-                  onClick={() => setLang(code)}
-                  aria-pressed={lang === code}
-                >
-                  {code}
-                </button>
-              ))}
-            </span>
-          </nav>
-        </header>
-
-        <div className={styles.divider} aria-hidden />
-
         <section className={styles.hero}>
           <p className={styles.badge}>
             <span className={styles.badgeDot} aria-hidden />
@@ -459,7 +390,7 @@ export default function Homepage() {
             {/* Hidden while there is only one article — an index page of one
                 is not worth a link. */}
             {liveArticles.length > 1 && (
-              <Link className={styles.allArticles} href="/analysis">
+              <Link className={styles.allArticles} href="/articles">
                 {t("allArticles", lang)}
               </Link>
             )}

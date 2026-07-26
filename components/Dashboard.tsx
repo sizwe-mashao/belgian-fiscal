@@ -24,6 +24,7 @@ import type {
   GeometryCollection,
   GeometryObject,
 } from "topojson-specification";
+import { useLanguage, type Lang } from "./LanguageContext";
 import styles from "./Dashboard.module.css";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
@@ -33,7 +34,6 @@ type ApiRegion = RegionId | "federal";
 type Basis = "commitment" | "payment";
 type Metric = "total" | "perCapita";
 type Tier = "regional" | "federal";
-type Lang = "EN" | "FR" | "NL" | "DE";
 
 type RegionNames = { EN: string; FR: string; NL: string; DE: string };
 
@@ -101,22 +101,12 @@ type MapPath = {
 type BelTopology = Topology<{ bel: GeometryCollection }>;
 
 const REGIONS: RegionId[] = ["flanders", "wallonia", "brussels"];
-const LANGS: Lang[] = ["EN", "FR", "NL", "DE"];
 const TOPO_URL =
   "https://cdn.jsdelivr.net/npm/datamaps@0.5.10/src/js/data/bel.topo.json";
 const MAP_WIDTH = 360;
 const MAP_HEIGHT = 240;
 
-// The brand mark itself is bilingual by design and is not translated.
-const BRAND = "Klare Lijn · Ligne Claire";
-
 const UI = {
-  dashLabel: {
-    EN: "/ Dashboard",
-    FR: "/ Tableau de bord",
-    NL: "/ Dashboard",
-    DE: "/ Dashboard",
-  },
   subcaption: {
     EN: "2026 budgets · change shown vs 2025 · EUR",
     FR: "Budgets 2026 · variation par rapport à 2025 · EUR",
@@ -793,7 +783,7 @@ function destroyChart(chartRef: MutableRefObject<Chart<"bar"> | null>) {
 }
 
 export default function Dashboard() {
-  const [lang, setLang] = useState<Lang>("EN");
+  const { lang } = useLanguage();
   const [tier, setTier] = useState<Tier>("regional");
   const [basis, setBasis] = useState<Basis>("commitment");
   const [metric, setMetric] = useState<Metric>("total");
@@ -1095,75 +1085,59 @@ export default function Dashboard() {
     };
   }, []);
 
+  // Rendered in both tiers' control rows, so switching back from federal does
+  // not depend on a header that no longer exists.
+  const tierSwitcher = (
+    <div className={styles.tierSwitcher} role="group" aria-label="Tier">
+      <button
+        type="button"
+        className={`${styles.tierButton}${tier === "regional" ? ` ${styles.tierButtonActive}` : ""}`}
+        onClick={() => setTier("regional")}
+        aria-pressed={tier === "regional"}
+      >
+        {t("regional", lang)}
+      </button>
+      <button
+        type="button"
+        className={`${styles.tierButton}${tier === "federal" ? ` ${styles.tierButtonActive}` : ""}`}
+        onClick={() => setTier("federal")}
+        aria-pressed={tier === "federal"}
+      >
+        {t("federal", lang)}
+      </button>
+    </div>
+  );
+
   return (
     <div className={styles.dashboard}>
-      <header className={styles.header}>
-        <h1 className={styles.appTitle}>
-          {BRAND}
-          <span className={styles.appTitleSuffix}>{t("dashLabel", lang)}</span>
-        </h1>
-        <div className={styles.headerControls}>
-          <div className={styles.tierSwitcher} role="group" aria-label="Tier">
-            <button
-              type="button"
-              className={`${styles.tierButton}${tier === "regional" ? ` ${styles.tierButtonActive}` : ""}`}
-              onClick={() => setTier("regional")}
-              aria-pressed={tier === "regional"}
-            >
-              {t("regional", lang)}
-            </button>
-            <button
-              type="button"
-              className={`${styles.tierButton}${tier === "federal" ? ` ${styles.tierButtonActive}` : ""}`}
-              onClick={() => setTier("federal")}
-              aria-pressed={tier === "federal"}
-            >
-              {t("federal", lang)}
-            </button>
-          </div>
-          <div
-            className={styles.langSwitcher}
-            role="group"
-            aria-label="Language"
-          >
-            {LANGS.map((code) => (
-              <button
-                key={code}
-                type="button"
-                className={`${styles.langButton}${lang === code ? ` ${styles.langButtonActive}` : ""}`}
-                onClick={() => setLang(code)}
-                aria-pressed={lang === code}
-              >
-                {code}
-              </button>
-            ))}
-          </div>
-        </div>
-      </header>
-
-      <div className={styles.regionalDivider} aria-hidden />
-
       {tier === "regional" && (
         <section className={styles.section}>
           <div className={styles.sectionControls}>
             <p className={styles.subcaption}>{t("subcaption", lang)}</p>
-            <div className={styles.basisToggle} role="group" aria-label="Basis">
-              <button
-                type="button"
-                className={`${styles.basisButton}${basis === "commitment" ? ` ${styles.basisButtonActive}` : ""}`}
-                onClick={() => setBasis("commitment")}
-                aria-pressed={basis === "commitment"}
+            <div className={styles.controlGroup}>
+              {tierSwitcher}
+              <div
+                className={styles.basisToggle}
+                role="group"
+                aria-label="Basis"
               >
-                {t("commitment", lang)}
-              </button>
-              <button
-                type="button"
-                className={`${styles.basisButton}${basis === "payment" ? ` ${styles.basisButtonActive}` : ""}`}
-                onClick={() => setBasis("payment")}
-                aria-pressed={basis === "payment"}
-              >
-                {t("payment", lang)}
-              </button>
+                <button
+                  type="button"
+                  className={`${styles.basisButton}${basis === "commitment" ? ` ${styles.basisButtonActive}` : ""}`}
+                  onClick={() => setBasis("commitment")}
+                  aria-pressed={basis === "commitment"}
+                >
+                  {t("commitment", lang)}
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.basisButton}${basis === "payment" ? ` ${styles.basisButtonActive}` : ""}`}
+                  onClick={() => setBasis("payment")}
+                  aria-pressed={basis === "payment"}
+                >
+                  {t("payment", lang)}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1407,6 +1381,7 @@ export default function Dashboard() {
             <p className={styles.subcaption}>
               {t("subcaption", lang)} · {t("paymentBasisOnly", lang)}
             </p>
+            <div className={styles.controlGroup}>{tierSwitcher}</div>
           </div>
 
           {federalLoading && (

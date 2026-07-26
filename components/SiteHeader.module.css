@@ -1,0 +1,155 @@
+.bar {
+  --panel-bg: #fafaf7;
+  --ink: #1b1b1e;
+  --muted: #6e6c64;
+  --muted-soft: #8a887f;
+  --flanders: #d8a118;
+  --wallonia: #b5442a;
+  --brussels: #3b5ba5;
+
+  box-sizing: border-box;
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--ink);
+  font-family: var(--font-work-sans), system-ui, sans-serif;
+}
+
+.bar *,
+.bar *::before,
+.bar *::after {
+  box-sizing: border-box;
+}
+
+/* The bar itself is full-bleed; only its contents are constrained, so the
+   background and the tricolour run the whole width of the viewport. */
+.barInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0.875rem 1.5rem;
+}
+
+.brand {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.1875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brandSuffix {
+  color: var(--muted-soft);
+  font-weight: 400;
+}
+
+.brand:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.375rem;
+  flex-wrap: wrap;
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  gap: 1.375rem;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8125rem;
+}
+
+/* Inactive items carry the same 2px border in transparent, so marking one
+   active does not shift the row. */
+.navLink {
+  display: inline-block;
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--ink);
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.navLinkActive {
+  color: var(--ink);
+  font-weight: 500;
+  border-bottom-color: var(--flanders);
+}
+
+.langSwitcher {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px 4px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+}
+
+.langButton {
+  margin: 0;
+  padding: 3px 9px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.langButton:hover {
+  color: var(--ink);
+}
+
+.langButton:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.langButtonActive,
+.langButtonActive:hover {
+  background: var(--ink);
+  color: var(--panel-bg);
+}
+
+/* The only tricolour rule on any page. Every other divider is a hairline. */
+.tricolour {
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--flanders) 0%,
+    var(--flanders) 33.33%,
+    var(--wallonia) 33.33%,
+    var(--wallonia) 66.66%,
+    var(--brussels) 66.66%,
+    var(--brussels) 100%
+  );
+}
+
+@media (max-width: 640px) {
+  .barInner {
+    padding-left: 1.125rem;
+    padding-right: 1.125rem;
+  }
+
+  .nav,
+  .navList {
+    gap: 0.875rem;
+  }
+}

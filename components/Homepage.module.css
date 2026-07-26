@@ -14,7 +14,6 @@
   box-sizing: border-box;
   min-height: 100%;
   padding: 2rem 1rem;
-  background: var(--page-bg);
   color: var(--ink);
   font-family: var(--font-work-sans), system-ui, sans-serif;
 }
@@ -34,109 +33,12 @@
   border-radius: 12px;
 }
 
-/* The tricolour rule: Flanders gold, Wallonia rust, Brussels blue, in equal
-   thirds. Full-bleed, so it must stay a direct child of .frame. */
+/* Section separator. The tricolour rule lives only in the shared site header;
+   everything inside the card is a hairline. Full-bleed, so it must stay a
+   direct child of .frame. */
 .divider {
-  height: 3px;
-  background: linear-gradient(
-    to right,
-    #d8a118 0%,
-    #d8a118 33.33%,
-    #b5442a 33.33%,
-    #b5442a 66.66%,
-    #3b5ba5 66.66%,
-    #3b5ba5 100%
-  );
-}
-
-/* ---------- header ---------- */
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  padding: 0.875rem 1.75rem;
-  border-bottom: 1px solid var(--ink);
-}
-
-.brand {
-  margin: 0;
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-size: 1.1875rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.brandDot {
-  color: var(--muted-soft);
-  font-weight: 400;
-}
-
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  flex-wrap: wrap;
-  font-size: 0.8125rem;
-}
-
-.navLink {
-  color: var(--ink);
-  text-decoration: none;
-  padding-bottom: 2px;
-  border-bottom: 2px solid var(--flanders);
-}
-
-.navLink:hover {
-  color: var(--body);
-}
-
-.navLink:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
-}
-
-/* Sections that do not exist yet, shown as pending rather than dead links. */
-.navPending {
-  color: var(--muted-soft);
-  cursor: default;
-}
-
-.langSwitcher {
-  display: inline-flex;
-  gap: 2px;
-  padding: 2px 4px;
-  border: 1px solid var(--ink);
-  border-radius: 999px;
-}
-
-.langButton {
-  margin: 0;
-  padding: 3px 8px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.75rem;
-  cursor: pointer;
-}
-
-.langButton:hover {
-  color: var(--ink);
-}
-
-.langButton:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 1px;
-}
-
-.langButtonActive,
-.langButtonActive:hover {
-  background: var(--ink);
-  color: var(--panel-bg);
+  height: 1px;
+  background: var(--border);
 }
 
 /* ---------- hero ---------- */
@@ -456,7 +358,6 @@
     padding: 0.75rem;
   }
 
-  .header,
   .hero,
   .how,
   .latest,
@@ -467,10 +368,6 @@
 
   .heroTitle {
     font-size: 1.75rem;
-  }
-
-  .nav {
-    gap: 0.875rem;
   }
 }
 
