@@ -3,7 +3,7 @@
  *   npx tsx lib/explorer/matcher.test.ts
  */
 
-import { match } from "./matcher";
+import { matchQuestion } from "./matcher";
 import type { QueryPlan } from "./types";
 
 type Expect = {
@@ -37,7 +37,7 @@ function samePlan(actual: QueryPlan, expected: Partial<QueryPlan>): string[] {
 }
 
 function test(input: string, expected: Expect) {
-  const result = match(input);
+  const result = matchQuestion(input);
   if (expected.ok === false) {
     if (result.ok === false) {
       passed += 1;
@@ -53,7 +53,7 @@ function test(input: string, expected: Expect) {
   if (!result.ok) {
     failed += 1;
     console.log(`FAIL  ${JSON.stringify(input)}`);
-    console.log(`      expected plan, got ok: false (${result.reason})`);
+    console.log(`      expected plan, got ok: false (${result.error})`);
     return;
   }
 

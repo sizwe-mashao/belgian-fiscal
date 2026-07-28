@@ -1,5 +1,5 @@
 import { isKnownCategory } from "./categories";
-import type { QueryPlan, ValidateResult } from "./types";
+import type { QueryPlan, ValidationResult } from "./types";
 
 const VALID_YEARS = new Set([2025, 2026]);
 const VALID_ENTITIES = new Set([
@@ -15,7 +15,7 @@ const VALID_ENTITIES = new Set([
  * A valid plan that returns no rows is NOT a validation failure — that path
  * belongs to absence handling (stage 4).
  */
-export function validatePlan(plan: QueryPlan): ValidateResult {
+export function validatePlan(plan: QueryPlan): ValidationResult {
   for (const entity of plan.entities) {
     if (!VALID_ENTITIES.has(entity)) {
       return {

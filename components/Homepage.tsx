@@ -5,13 +5,6 @@ import Link from "next/link";
 import { useLanguage, type Lang } from "./LanguageContext";
 import styles from "./Homepage.module.css";
 
-/**
- * Where the one live article lives. This route does not exist yet — create
- * `app/articles/flemish-education-line/page.tsx` (or change this constant) or
- * the featured card will 404.
- */
-const FEATURED_HREF = "/articles/flemish-education-line";
-
 type ArticleStatus = "live" | "soon";
 
 type Article = {
@@ -24,15 +17,18 @@ type Article = {
   href?: string;
 };
 
-// Only `status: "live"` articles are clickable. Adding the next article is a
-// matter of flipping its status and giving it an href — the "All articles" link
-// and the card styling both follow from this list.
+/**
+ * No article page exists yet, so every entry is "soon" and nothing links out.
+ *
+ * To publish one: set `status: "live"` and give it an `href`. Everything else
+ * follows from this list — the card becomes clickable, the hero's secondary
+ * button appears, and "All articles" returns once a second one goes live.
+ */
 const ARTICLES: Article[] = [
   {
     id: "flemish-education-line",
-    status: "live",
+    status: "soon",
     tone: "gold",
-    href: FEATURED_HREF,
     tag: {
       EN: "Education",
       FR: "Éducation",
@@ -46,10 +42,10 @@ const ARTICLES: Article[] = [
       DE: "Flandern budgetiert 16,8 Mrd. € für Bildung. Wallonien hat überhaupt keine Zeile. Beides ist kein Fehler.",
     },
     standfirst: {
-      EN: "Why community competencies make regional budgets hard to compare.",
-      FR: "Pourquoi les compétences communautaires compliquent la comparaison des budgets régionaux.",
-      NL: "Waarom gemeenschapsbevoegdheden regionale begrotingen moeilijk vergelijkbaar maken.",
-      DE: "Warum Gemeinschaftskompetenzen den Vergleich regionaler Haushalte erschweren.",
+      EN: "Why community competencies make regional budgets hard to compare. In preparation.",
+      FR: "Pourquoi les compétences communautaires compliquent la comparaison des budgets régionaux. En préparation.",
+      NL: "Waarom gemeenschapsbevoegdheden regionale begrotingen moeilijk vergelijkbaar maken. In voorbereiding.",
+      DE: "Warum Gemeinschaftskompetenzen den Vergleich regionaler Haushalte erschweren. In Vorbereitung.",
     },
   },
   {
@@ -130,6 +126,12 @@ const UI = {
     FR: "Explorer les données",
     NL: "Verken de data",
     DE: "Daten erkunden",
+  },
+  ctaDashboard: {
+    EN: "See the dashboard",
+    FR: "Voir le tableau de bord",
+    NL: "Bekijk het dashboard",
+    DE: "Zum Dashboard",
   },
   ctaSecondary: {
     EN: "Read the analysis",
@@ -307,7 +309,7 @@ export default function Homepage() {
   const totalEur000 = useRegionalTotal();
 
   const liveArticles = useMemo(
-    () => ARTICLES.filter((a) => a.status === "live"),
+    () => ARTICLES.filter((a) => a.status === "live" && a.href),
     []
   );
 
@@ -338,9 +340,15 @@ export default function Homepage() {
           </p>
 
           <div className={styles.ctaRow}>
-            <Link className={styles.ctaPrimary} href="/dashboard">
+            {/* "Explore the data" is the Data Explorer — the question box.
+                The dashboard is the curated view, so it sits second. */}
+            <Link className={styles.ctaPrimary} href="/data">
               {t("ctaPrimary", lang)}
             </Link>
+            <Link className={styles.ctaSecondary} href="/dashboard">
+              {t("ctaDashboard", lang)}
+            </Link>
+            {/* Returns automatically once an article goes live. */}
             {featured?.href && (
               <Link className={styles.ctaSecondary} href={featured.href}>
                 {t("ctaSecondary", lang)}
@@ -387,8 +395,7 @@ export default function Homepage() {
         <section className={styles.latest}>
           <div className={styles.latestHead}>
             <h2 className={styles.latestTitle}>{t("latest", lang)}</h2>
-            {/* Hidden while there is only one article — an index page of one
-                is not worth a link. */}
+            {/* Hidden until there is more than one article to index. */}
             {liveArticles.length > 1 && (
               <Link className={styles.allArticles} href="/articles">
                 {t("allArticles", lang)}

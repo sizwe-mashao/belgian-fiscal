@@ -251,7 +251,11 @@
   white-space: nowrap;
 }
 
+/* `display: block` matters: the track is rendered as a <span>, and an inline
+   box has no height for .barFill's `height: 100%` to resolve against — the
+   fill collapses to nothing and every bar looks empty. */
 .barTrack {
+  display: block;
   height: 1.25rem;
   background: #f4f2ea;
   border-radius: 0 3px 3px 0;
@@ -259,6 +263,7 @@
 }
 
 .barFill {
+  display: block;
   height: 100%;
   background: var(--gold);
   border-radius: 0 3px 3px 0;

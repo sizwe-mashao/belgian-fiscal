@@ -3,6 +3,7 @@
   --ink: #1b1b1e;
   --muted: #6e6c64;
   --muted-soft: #8a887f;
+  --rule: #d8d6cc;
   --flanders: #d8a118;
   --wallonia: #b5442a;
   --brussels: #3b5ba5;
@@ -74,12 +75,13 @@
   display: inline-block;
   padding-bottom: 3px;
   border-bottom: 2px solid transparent;
-  color: var(--muted);
+  color: var(--ink);
   text-decoration: none;
 }
 
+/* Hover hints at the active treatment without committing to it. */
 .navLink:hover {
-  color: var(--ink);
+  border-bottom-color: var(--rule);
 }
 
 .navLink:focus-visible {
@@ -91,6 +93,32 @@
   color: var(--ink);
   font-weight: 500;
   border-bottom-color: var(--flanders);
+}
+
+/* Not-yet-built sections. Same metrics as .navLink so the row does not shift,
+   but lighter and inert — no hover, no pointer, no tab stop. */
+.navPending {
+  display: inline-block;
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted-soft);
+  cursor: default;
+  user-select: none;
+}
+
+/* .navLink is ink and .navPending is muted-soft: the contrast between them is
+   what signals which sections exist. Keep them apart if either changes. */
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .langSwitcher {
