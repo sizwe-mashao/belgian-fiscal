@@ -1,0 +1,222 @@
+/* Same palette and frame as the Data Explorer, so the pages read as one site. */
+.page {
+  --panel-bg: #fafaf7;
+  --ink: #1b1b1e;
+  --muted: #6e6c64;
+  --body: #4a4942;
+  --border: #e4e2d9;
+  --rule: #d8d6cc;
+  --error-bg: #fbecea;
+  --error-border: #ebc6c0;
+  --error-text: #7a2318;
+  --ok-bg: #edf4ea;
+  --ok-border: #c9dcc0;
+  --ok-text: #2d4a22;
+
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 2rem 1rem;
+  color: var(--ink);
+  font-family: var(--font-work-sans), system-ui, sans-serif;
+}
+
+.page *,
+.page *::before,
+.page *::after {
+  box-sizing: border-box;
+}
+
+.frame {
+  max-width: 720px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--panel-bg);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+}
+
+.intro,
+.formSection {
+  padding: 1.75rem;
+}
+
+.title {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.heading {
+  margin: 1.25rem 0 0.375rem;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.title + .heading,
+.formSection > .heading {
+  margin-top: 0;
+}
+
+.text {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--body);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.row > .field {
+  flex: 1 1 14rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9375rem;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.input:disabled {
+  opacity: 0.65;
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--error-border);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 8rem;
+  line-height: 1.5;
+}
+
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.button {
+  padding: 0.7rem 1.5rem;
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--panel-bg);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  background: #33333a;
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.privacy {
+  flex: 1 1 16rem;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.error {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--error-border);
+  border-radius: 8px;
+  background: var(--error-bg);
+  color: var(--error-text);
+  font-size: 0.8125rem;
+}
+
+.success {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--ok-border);
+  border-radius: 8px;
+  background: var(--ok-bg);
+  color: var(--ok-text);
+  font-size: 0.9375rem;
+}
+
+.success p {
+  margin: 0 0 0.5rem;
+}
+
+.linkButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.linkButton:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}

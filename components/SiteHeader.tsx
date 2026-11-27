@@ -58,7 +58,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/contact",
-    built: false,
+    built: true,
     label: {
       EN: "Contact",
       FR: "Contact",
