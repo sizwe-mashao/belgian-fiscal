@@ -76,7 +76,6 @@ test("What does Flanders spend on education?", {
     entities: ["flanders"],
     category: "Education",
     year: 2026,
-    basis: "commitment",
     metric: "total",
   },
 });
@@ -150,7 +149,6 @@ test("Flanders spending per resident in 2025", {
 test("What did Brussels pay out in 2026?", {
   ok: true,
   plan: {
-    basis: "payment",
     entities: ["brussels"],
     year: 2026,
   },

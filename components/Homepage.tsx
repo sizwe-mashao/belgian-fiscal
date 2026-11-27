@@ -49,29 +49,6 @@ const ARTICLES: Article[] = [
     },
   },
   {
-    id: "commitment-vs-payment",
-    status: "soon",
-    tone: "rust",
-    tag: {
-      EN: "Methodology",
-      FR: "Méthodologie",
-      NL: "Methode",
-      DE: "Methodik",
-    },
-    title: {
-      EN: "Commitment vs payment: Belgium's two-track budgets, explained",
-      FR: "Engagement vs paiement : les budgets à deux vitesses de la Belgique, expliqués",
-      NL: "Vastlegging vs betaling: de tweesporenbegroting van België uitgelegd",
-      DE: "Verpflichtung vs. Zahlung: Belgiens Zweispur-Haushalte erklärt",
-    },
-    standfirst: {
-      EN: "Brussels commits less in 2026 — but pays out more. How to read both columns.",
-      FR: "Bruxelles engage moins en 2026 — mais paie davantage. Comment lire les deux colonnes.",
-      NL: "Brussel legt in 2026 minder vast — maar betaalt meer uit. Zo leest u beide kolommen.",
-      DE: "Brüssel verpflichtet 2026 weniger — zahlt aber mehr aus. So lesen Sie beide Spalten.",
-    },
-  },
-  {
     id: "per-capita-map",
     status: "soon",
     tone: "blue",
@@ -267,7 +244,7 @@ function useRegionalTotal(): number | null {
     async function load() {
       try {
         const res = await fetch(
-          "/api/expenditure?region=all&year=2026&basis=commitment"
+          "/api/expenditure?region=all&year=2026"
         );
         if (!res.ok) return;
         const data = await res.json();

@@ -10,7 +10,6 @@ export type Operation =
   | "share"
   | "rank";
 
-export type Basis = "commitment" | "payment";
 export type Metric = "total" | "perCapita";
 export type Year = 2025 | 2026;
 
@@ -20,7 +19,6 @@ export type QueryPlan = {
   category: string | null; // DISPLAY NAME, not slug; null = whole budget
   year: Year;
   compareYear?: Year; // `change` only
-  basis: Basis;
   metric: Metric;
   limit?: number; // `rank` only
 };
@@ -34,8 +32,7 @@ export type MatchResult =
   | { ok: false; error: string };
 
 /**
- * Stage 2. Rejects impossible plans before any query runs — notably
- * commitment basis on federal, where every source figure is "n/q".
+ * Stage 2. Rejects impossible plans before any query runs.
  */
 export type ValidationResult =
   | { ok: true; plan: QueryPlan }
@@ -46,7 +43,6 @@ export type ExpenditureSliceRow = {
   region_id: EntityId;
   department_id: string;
   financial_year: number;
-  commitment_amount_eur_000: number | null;
   payment_amount_eur_000: number | null;
   notes: string | null;
 };

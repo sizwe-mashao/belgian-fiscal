@@ -30,13 +30,10 @@ export function requiredSlices(
   return slices;
 }
 
-function amountField(
-  basis: QueryPlan["basis"]
-): "commitment_amount_eur_000" | "payment_amount_eur_000" {
-  return basis === "payment"
-    ? "payment_amount_eur_000"
-    : "commitment_amount_eur_000";
-}
+// Every figure is on a payment basis — the only basis available for all
+// four entities.
+const AMOUNT_FIELD = "payment_amount_eur_000";
+type AmountField = typeof AMOUNT_FIELD;
 
 function toEuros(eur000: number): number {
   return eur000 * 1000;
@@ -77,7 +74,7 @@ type Agg = {
 
 function aggregate(
   rows: ExpenditureSliceRow[],
-  field: "commitment_amount_eur_000" | "payment_amount_eur_000",
+  field: AmountField,
   filter?: { entity?: EntityId; year?: number; departmentId?: string | null }
 ): Agg {
   let eur000 = 0;
@@ -135,7 +132,7 @@ export function execute(
   populations: PopulationMap,
   deptNames: DepartmentNames
 ): QueryResult {
-  const field = amountField(plan.basis);
+  const field = AMOUNT_FIELD;
   const departmentId = plan.category
     ? deptIdForCategory(plan.category, deptNames)
     : null;
@@ -172,7 +169,7 @@ function execTotal(
   plan: QueryPlan,
   rows: ExpenditureSliceRow[],
   populations: PopulationMap,
-  field: "commitment_amount_eur_000" | "payment_amount_eur_000",
+  field: AmountField,
   departmentId: string | null
 ): QueryResult {
   const entity = plan.entities[0];
@@ -220,7 +217,7 @@ function execBreakdown(
   rows: ExpenditureSliceRow[],
   populations: PopulationMap,
   deptNames: DepartmentNames,
-  field: "commitment_amount_eur_000" | "payment_amount_eur_000"
+  field: AmountField
 ): QueryResult {
   const entity = plan.entities[0];
   const pop = populations[entity]?.[plan.year];
@@ -289,7 +286,7 @@ function execCompare(
   plan: QueryPlan,
   rows: ExpenditureSliceRow[],
   populations: PopulationMap,
-  field: "commitment_amount_eur_000" | "payment_amount_eur_000",
+  field: AmountField,
   departmentId: string | null
 ): QueryResult {
   const resultRows: ResultRow[] = [];
@@ -351,7 +348,7 @@ function execChange(
   plan: QueryPlan,
   rows: ExpenditureSliceRow[],
   populations: PopulationMap,
-  field: "commitment_amount_eur_000" | "payment_amount_eur_000",
+  field: AmountField,
   departmentId: string | null
 ): QueryResult {
   const entity = plan.entities[0];
@@ -421,7 +418,7 @@ function execShare(
   plan: QueryPlan,
   rows: ExpenditureSliceRow[],
   populations: PopulationMap,
-  field: "commitment_amount_eur_000" | "payment_amount_eur_000",
+  field: AmountField,
   departmentId: string | null
 ): QueryResult {
   const entity = plan.entities[0];
@@ -478,7 +475,7 @@ function execRank(
   rows: ExpenditureSliceRow[],
   populations: PopulationMap,
   deptNames: DepartmentNames,
-  field: "commitment_amount_eur_000" | "payment_amount_eur_000"
+  field: AmountField
 ): QueryResult {
   const breakdown = execBreakdown(
     plan,
