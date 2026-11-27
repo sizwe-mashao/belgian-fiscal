@@ -14,6 +14,7 @@ Harmonises Belgian federal and regional (Flanders, Wallonia, Brussels) expenditu
   - Stages 1–5 are deterministic. Absence classification uses `lib/competence.ts` (constitutional / blended / structural / unexplained).
   - Narrative (`lib/explorer/narrative.ts`) is a best-effort Gemini layer: prose only, never invents figures or explains absences; returns null on failure or without `GEMINI_API_KEY`.
   - Matcher tests: `npx tsx lib/explorer/matcher.test.ts`.
+- **`POST /api/contact`** (`/contact` page): validates the form, saves to the Firestore `contact_messages` collection, then emails it to the owner via `lib/contactMail.ts` (Resend HTTP API, plain `fetch`, Reply-To = visitor). Env vars: `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, optional `CONTACT_FROM_EMAIL` (defaults to Resend's test sender `onboarding@resend.dev`); without the first two, messages are only saved.
 - Shared helpers: `lib/slugify.ts` (also used by the seed script), `lib/safeAmount.ts`.
 
 ## Commands
