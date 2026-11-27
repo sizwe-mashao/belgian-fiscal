@@ -31,7 +31,6 @@ Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
 export type RegionId = "flanders" | "wallonia" | "brussels";
 type ApiRegion = RegionId | "federal";
-type Basis = "commitment" | "payment";
 type Metric = "total" | "perCapita";
 type Tier = "regional" | "federal";
 
@@ -120,10 +119,10 @@ const UI = {
     DE: "ggü. 2025",
   },
   footer: {
-    EN: "Regional figures: official 2025–2026 expenditure budgets, commitment and payment bases · Federal figures: payment basis only",
-    FR: "Chiffres régionaux : budgets de dépenses officiels 2025-2026, bases engagement et paiement · Chiffres fédéraux : base paiement uniquement",
-    NL: "Regionale cijfers: officiële uitgavenbegrotingen 2025-2026, op basis van vastlegging en betaling · Federale cijfers: enkel betalingsbasis",
-    DE: "Regionale Zahlen: offizielle Ausgabenhaushalte 2025-2026, Verpflichtungs- und Zahlungsbasis · Bundeszahlen: nur Zahlungsbasis",
+    EN: "Regional and federal figures: official 2025–2026 expenditure budgets, payment basis",
+    FR: "Chiffres régionaux et fédéraux : budgets de dépenses officiels 2025-2026, base paiement",
+    NL: "Gewestelijke en federale cijfers: officiële uitgavenbegrotingen 2025-2026, op betalingsbasis",
+    DE: "Regionale und föderale Zahlen: offizielle Ausgabenhaushalte 2025-2026, Zahlungsbasis",
   },
   fedExpenditure2025: {
     EN: "Federal expenditure 2025",
@@ -143,12 +142,6 @@ const UI = {
     NL: "Per inwoner 2026",
     DE: "Pro Einwohner 2026",
   },
-  paymentBasisOnly: {
-    EN: "payment basis only",
-    FR: "base paiement uniquement",
-    NL: "enkel betalingsbasis",
-    DE: "nur Zahlungsbasis",
-  },
   regional: {
     EN: "Regional",
     FR: "Régional",
@@ -160,18 +153,6 @@ const UI = {
     FR: "Fédéral",
     NL: "Federaal",
     DE: "Föderal",
-  },
-  commitment: {
-    EN: "Commitment",
-    FR: "Engagement",
-    NL: "Vastlegging",
-    DE: "Verpflichtung",
-  },
-  payment: {
-    EN: "Payment",
-    FR: "Paiement",
-    NL: "Betaling",
-    DE: "Zahlung",
   },
   loading: {
     EN: "Loading…",
@@ -307,10 +288,10 @@ const CAVEATS: Record<RegionId, Record<Lang, string>> = {
     DE: "Bildung erscheint nur bei Flandern, das Region und Gemeinschaft zusammengelegt hat — Wallonien und Brüssel finanzieren Bildung über die Gemeinschaften, außerhalb dieses Datensatzes. Ministerkabinette sind nicht quantifiziert: die Quelle nennt nur eine ungefähre Spanne pro Kabinett, keine summierbare Gesamtzahl. Zudem wurden 2026 die getrennten Bereiche Welzijn, Gezondheids- en woonzorg und Sociale bescherming zu einem einzigen Zorg-Bereich verschmolzen, sodass Pflegeausgaben nicht Code für Code mit 2025 vergleichbar sind.",
   },
   wallonia: {
-    EN: "The largest division, DO17, bundles local authorities, social action and health, and runs to roughly 45–48% of the budget. It cannot be split at division level, so cross-region comparisons of local-government spending understate Wallonia. The gap between commitment and payment in the Secretariat-General is the Plan de relance multi-year payment schedule, not an error.",
-    FR: "La plus grande division, DO17, regroupe pouvoirs locaux, action sociale et santé, et représente environ 45 à 48 % du budget. Elle n'est pas séparable au niveau des divisions : les comparaisons interrégionales des dépenses en pouvoirs locaux sous-estiment donc la Wallonie. L'écart entre engagement et paiement au Secrétariat général correspond à l'échéancier pluriannuel du Plan de relance, non à une erreur.",
-    NL: "De grootste afdeling, DO17, bundelt lokale besturen, sociale actie en gezondheid en beslaat ongeveer 45 tot 48% van de begroting. Ze is niet te splitsen op afdelingsniveau, waardoor interregionale vergelijkingen van uitgaven aan lokale besturen Wallonië onderschatten. Het verschil tussen vastlegging en betaling bij het Secretariaat-generaal is het meerjarige betaalschema van het Plan de relance, geen fout.",
-    DE: "Die größte Abteilung, DO17, vereint lokale Behörden, Sozialhilfe und Gesundheit und macht rund 45 bis 48 % des Haushalts aus. Sie lässt sich auf Abteilungsebene nicht aufteilen, weshalb regionsübergreifende Vergleiche der Kommunalausgaben Wallonien unterschätzen. Die Differenz zwischen Verpflichtung und Zahlung im Generalsekretariat ist der mehrjährige Zahlungsplan des Plan de relance, kein Fehler.",
+    EN: "The largest division, DO17, bundles local authorities, social action and health, and runs to roughly 45–48% of the budget. It cannot be split at division level, so cross-region comparisons of local-government spending understate Wallonia.",
+    FR: "La plus grande division, DO17, regroupe pouvoirs locaux, action sociale et santé, et représente environ 45 à 48 % du budget. Elle n'est pas séparable au niveau des divisions : les comparaisons interrégionales des dépenses en pouvoirs locaux sous-estiment donc la Wallonie.",
+    NL: "De grootste afdeling, DO17, bundelt lokale besturen, sociale actie en gezondheid en beslaat ongeveer 45 tot 48% van de begroting. Ze is niet te splitsen op afdelingsniveau, waardoor interregionale vergelijkingen van uitgaven aan lokale besturen Wallonië onderschatten.",
+    DE: "Die größte Abteilung, DO17, vereint lokale Behörden, Sozialhilfe und Gesundheit und macht rund 45 bis 48 % des Haushalts aus. Sie lässt sich auf Abteilungsebene nicht aufteilen, weshalb regionsübergreifende Vergleiche der Kommunalausgaben Wallonien unterschätzen.",
   },
   brussels: {
     EN: "Brussels data is reported at mission level. No ministerial-cabinet line exists anywhere in the Brussels source, unlike Wallonia's DO02 and Flanders' VF-VO — that figure is absent, not zero. Two large missions are blended: Affaires intérieures mixes fire and security with local-government support, and Social–Santé is funded jointly by the three Community Commissions across health and social protection.",
@@ -503,12 +484,9 @@ function isDerivedPopulation(source: string): boolean {
 
 async function fetchRegionYear(
   region: ApiRegion,
-  year: number,
-  basis: Basis
+  year: number
 ): Promise<ExpenditureResult> {
-  const res = await fetch(
-    `/api/expenditure?region=${region}&year=${year}&basis=${basis}`
-  );
+  const res = await fetch(`/api/expenditure?region=${region}&year=${year}`);
   if (!res.ok) {
     throw new Error(`Failed to load ${region} ${year}`);
   }
@@ -601,7 +579,7 @@ type BarChartSpec = {
 
 // Draws last year's level as a vertical tick across each bar. The values are
 // read through a getter at paint time, because Chart.js only accepts plugins at
-// construction while the data behind them changes on every basis/metric switch.
+// construction while the data behind them changes on every metric switch.
 function previousYearMarker(getSpec: () => BarChartSpec): Plugin<"bar"> {
   return {
     id: "previousYearMarker",
@@ -650,8 +628,7 @@ function syncBarChart(
   specRef.current = spec;
 
   // The canvas is unmounted and remounted whenever its containing block is
-  // gated behind a loading flag (basis toggle on the regional side, repeat
-  // visits on the federal side). Without this check, chartRef still points at
+  // gated behind a loading flag (repeat visits on the federal side). Without this check, chartRef still points at
   // a Chart bound to the old detached canvas, so update() silently paints
   // into a canvas nobody can see and the visible one never gets a chart.
   if (chartRef.current && chartRef.current.canvas !== canvas) {
@@ -785,7 +762,6 @@ function destroyChart(chartRef: MutableRefObject<Chart<"bar"> | null>) {
 export default function Dashboard() {
   const { lang } = useLanguage();
   const [tier, setTier] = useState<Tier>("regional");
-  const [basis, setBasis] = useState<Basis>("commitment");
   const [metric, setMetric] = useState<Metric>("total");
   // Mockup opens with Flanders selected rather than an empty breakdown.
   const [selectedRegion, setSelectedRegion] = useState<RegionId | null>(
@@ -871,8 +847,8 @@ export default function Dashboard() {
       try {
         const results = await Promise.all(
           REGIONS.flatMap((region) => [
-            fetchRegionYear(region, 2026, basis),
-            fetchRegionYear(region, 2025, basis),
+            fetchRegionYear(region, 2026),
+            fetchRegionYear(region, 2025),
           ])
         );
 
@@ -918,7 +894,7 @@ export default function Dashboard() {
     return () => {
       cancelled = true;
     };
-  }, [basis]);
+  }, []);
 
   useEffect(() => {
     if (tier !== "federal") return;
@@ -930,11 +906,9 @@ export default function Dashboard() {
       setFederalError(null);
 
       try {
-        // Federal is payment-basis only — every commitment figure in the source
-        // extract is "n/q", so the basis toggle is deliberately not offered here.
         const [result, previous] = await Promise.all([
-          fetchRegionYear("federal", 2026, "payment"),
-          fetchRegionYear("federal", 2025, "payment"),
+          fetchRegionYear("federal", 2026),
+          fetchRegionYear("federal", 2025),
         ]);
         if (cancelled) return;
 
@@ -1114,31 +1088,7 @@ export default function Dashboard() {
         <section className={styles.section}>
           <div className={styles.sectionControls}>
             <p className={styles.subcaption}>{t("subcaption", lang)}</p>
-            <div className={styles.controlGroup}>
-              {tierSwitcher}
-              <div
-                className={styles.basisToggle}
-                role="group"
-                aria-label="Basis"
-              >
-                <button
-                  type="button"
-                  className={`${styles.basisButton}${basis === "commitment" ? ` ${styles.basisButtonActive}` : ""}`}
-                  onClick={() => setBasis("commitment")}
-                  aria-pressed={basis === "commitment"}
-                >
-                  {t("commitment", lang)}
-                </button>
-                <button
-                  type="button"
-                  className={`${styles.basisButton}${basis === "payment" ? ` ${styles.basisButtonActive}` : ""}`}
-                  onClick={() => setBasis("payment")}
-                  aria-pressed={basis === "payment"}
-                >
-                  {t("payment", lang)}
-                </button>
-              </div>
-            </div>
+            <div className={styles.controlGroup}>{tierSwitcher}</div>
           </div>
 
           {loading && <p className={styles.status}>{t("loading", lang)}</p>}
@@ -1378,9 +1328,7 @@ export default function Dashboard() {
       {tier === "federal" && (
         <section className={styles.section}>
           <div className={styles.sectionControls}>
-            <p className={styles.subcaption}>
-              {t("subcaption", lang)} · {t("paymentBasisOnly", lang)}
-            </p>
+            <p className={styles.subcaption}>{t("subcaption", lang)}</p>
             <div className={styles.controlGroup}>{tierSwitcher}</div>
           </div>
 

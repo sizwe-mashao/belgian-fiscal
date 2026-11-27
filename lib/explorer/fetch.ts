@@ -15,7 +15,6 @@ type ExpenditureDoc = {
   region_id: string;
   department_id: string;
   financial_year: number;
-  commitment_amount_eur_000: number | null;
   payment_amount_eur_000: number | null;
   notes: string | null;
 };
@@ -78,7 +77,6 @@ export async function fetchPlanData(plan: QueryPlan): Promise<{
         region_id: data.region_id as EntityId,
         department_id: data.department_id,
         financial_year: data.financial_year as Year,
-        commitment_amount_eur_000: data.commitment_amount_eur_000,
         payment_amount_eur_000: data.payment_amount_eur_000,
         notes: data.notes,
       });

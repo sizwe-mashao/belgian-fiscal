@@ -7,16 +7,17 @@ import { getDb } from "@/lib/firebaseAdmin";
  * Query params:
  *   region  - "flanders" | "wallonia" | "brussels" | "federal" | "all" (default: "all")
  *   year    - 2025 | 2026 (default: 2026)
- *   basis   - "commitment" | "payment" (default: "commitment")
+ *
+ * All amounts are on a payment basis — the only basis available for every
+ * entity, federal included.
  *
  * Returns real data only, straight from Firestore (seeded from the two
  * source CSVs). No placeholder or invented figures.
  *
- * Example: /api/expenditure?region=flanders&year=2026&basis=commitment
+ * Example: /api/expenditure?region=flanders&year=2026
  */
 
 const VALID_REGIONS = ["flanders", "wallonia", "brussels", "federal"];
-const VALID_BASES = ["commitment", "payment"];
 
 type ExpenditureDoc = {
   region_id: string;
@@ -28,7 +29,6 @@ type ExpenditureDoc = {
   original_code: string | null;
   original_name_native: string | null;
   original_name_en: string | null;
-  commitment_amount_eur_000: number | null;
   payment_amount_eur_000: number | null;
   notes: string | null;
 };
@@ -41,9 +41,7 @@ type RegionDoc = {
   population_source: string;
 };
 
-function amountField(basis: string): "commitment_amount_eur_000" | "payment_amount_eur_000" {
-  return basis === "payment" ? "payment_amount_eur_000" : "commitment_amount_eur_000";
-}
+const AMOUNT_FIELD = "payment_amount_eur_000";
 
 // Guards against any non-numeric value that might end up in Firestore
 // (e.g. a data-entry error) — treats it as "not quantified" (excluded from
@@ -56,7 +54,6 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const regionParam = (searchParams.get("region") || "all").toLowerCase();
   const yearParam = parseInt(searchParams.get("year") || "2026", 10);
-  const basisParam = (searchParams.get("basis") || "commitment").toLowerCase();
 
   if (regionParam !== "all" && !VALID_REGIONS.includes(regionParam)) {
     return NextResponse.json(
@@ -67,15 +64,9 @@ export async function GET(request: NextRequest) {
   if (![2025, 2026].includes(yearParam)) {
     return NextResponse.json({ error: `Invalid year "${yearParam}". Must be 2025 or 2026.` }, { status: 400 });
   }
-  if (!VALID_BASES.includes(basisParam)) {
-    return NextResponse.json(
-      { error: `Invalid basis "${basisParam}". Must be one of: ${VALID_BASES.join(", ")}` },
-      { status: 400 }
-    );
-  }
 
   const db = getDb();
-  const field = amountField(basisParam);
+  const field = AMOUNT_FIELD;
 
   try {
     // Fetch region metadata (population, names, color) for the region(s) requested.
@@ -143,7 +134,6 @@ export async function GET(request: NextRequest) {
           region_names: regions[id].names,
           heraldic_color: regions[id].heraldic_color,
           financial_year: yearParam,
-          basis: basisParam,
           population,
           population_source: regions[id].population_source,
           total_amount_eur_000: totalAmount000,
@@ -154,7 +144,7 @@ export async function GET(request: NextRequest) {
       });
 
     return NextResponse.json({
-      query: { region: regionParam, year: yearParam, basis: basisParam },
+      query: { region: regionParam, year: yearParam },
       results: regionParam === "all" ? results : results[0] ?? null,
     });
   } catch (err) {

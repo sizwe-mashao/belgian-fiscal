@@ -9,7 +9,7 @@ Harmonises Belgian federal and regional (Flanders, Wallonia, Brussels) expenditu
 - **Next.js 16, App Router.** Pages: `app/page.tsx` (homepage), `app/dashboard`, `app/data` (Data Explorer). Read `node_modules/next/dist/docs/` before using any Next API (see AGENTS.md).
 - **Shell:** `app/layout.tsx` wraps every page in `LanguageProvider` (`components/LanguageContext.tsx`, EN/FR/NL/DE, persisted to localStorage) and `SiteHeader`.
 - **Backend: Firestore.** Seeded by `scripts/seed.js` from `data/Belgium_Combined_Expenditure_20252026.csv` and `data/Belgium_Population.csv` only — no invented figures. Server access goes through `lib/firebaseAdmin.ts` (local: `GOOGLE_APPLICATION_CREDENTIALS`; Vercel: inline `FIREBASE_SERVICE_ACCOUNT`).
-- **`GET /api/expenditure`** (`region`, `year`, `basis`): totals per region/department with `per_capita_eur` and an `incomplete` flag for departments with data gaps.
+- **`GET /api/expenditure`** (`region`, `year`): payment-basis totals per region/department with `per_capita_eur` and an `incomplete` flag for departments with data gaps.
 - **`POST /api/ask`** (Data Explorer), pipeline in `lib/explorer/`: matcher → validator → fetch → execute → absence → narrative.
   - Stages 1–5 are deterministic. Absence classification uses `lib/competence.ts` (constitutional / blended / structural / unexplained).
   - Narrative (`lib/explorer/narrative.ts`) is a best-effort Gemini layer: prose only, never invents figures or explains absences; returns null on failure or without `GEMINI_API_KEY`.

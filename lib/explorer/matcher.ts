@@ -1,7 +1,6 @@
 import type { EntityId } from "@/lib/competence";
 import { SORTED_CATEGORY_SYNONYMS } from "./categories";
 import type {
-  Basis,
   MatchResult,
   Metric,
   Operation,
@@ -55,14 +54,6 @@ function findYear(q: string): Year {
   if (/\b2025\b/.test(q) || /\blast\s+year\b/i.test(q)) return 2025;
   if (/\b2026\b/.test(q) || /\bthis\s+year\b/i.test(q)) return 2026;
   return 2026;
-}
-
-function findBasis(q: string): Basis {
-  if (/\b(payment|payments|paid|pay|pays|disbursed)\b/i.test(q))
-    return "payment";
-  if (/\b(commitment|committed|commit|commits|engagement)\b/i.test(q))
-    return "commitment";
-  return "commitment";
 }
 
 function findMetric(q: string): Metric {
@@ -134,7 +125,7 @@ function detectOperation(
 
   // total — a single figure for an entity (± category)
   if (
-    /\b(spend|spends|spending|budget|total|how\s+much|commit|committed|commitment|pay|paid|payment|payments|disbursed)\b/i.test(
+    /\b(spend|spends|spending|budget|total|how\s+much|pay|paid|payment|payments|disbursed)\b/i.test(
       q
     ) ||
     category !== null
@@ -163,7 +154,6 @@ export function matchQuestion(question: string): MatchResult {
   let entities = findEntities(q);
   const category = findCategory(q);
   const year = findYear(q);
-  const basis = findBasis(q);
   const metric = findMetric(q);
 
   // "Belgium" / "all regions" with a comparative cue → the three regions.
@@ -220,7 +210,6 @@ export function matchQuestion(question: string): MatchResult {
     entities,
     category,
     year,
-    basis,
     metric,
   };
 

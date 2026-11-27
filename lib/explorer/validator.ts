@@ -49,19 +49,6 @@ export function validatePlan(plan: QueryPlan): ValidationResult {
     };
   }
 
-  // Every federal commitment figure in the source is n/q. Refuse rather than
-  // silently returning zero or silently switching basis.
-  if (
-    plan.basis === "commitment" &&
-    plan.entities.includes("federal")
-  ) {
-    return {
-      ok: false,
-      error:
-        "Federal figures are available on a payment basis only — every commitment amount in the federal extract is marked not quantified. Ask again with payment basis (for example: “What did the federal government pay in 2026?”).",
-    };
-  }
-
   if (plan.operation === "compare" && plan.entities.length < 2) {
     return {
       ok: false,

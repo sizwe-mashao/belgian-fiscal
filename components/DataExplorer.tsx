@@ -98,7 +98,6 @@ const UI = {
     DE: "Kategorie",
   },
   planYear: { EN: "year", FR: "année", NL: "jaar", DE: "Jahr" },
-  planBasis: { EN: "basis", FR: "base", NL: "basis", DE: "Basis" },
   planMetric: {
     EN: "metric",
     FR: "mesure",
@@ -162,7 +161,6 @@ function planSummary(plan: QueryPlan, lang: Lang) {
       t("planYear", lang),
       plan.compareYear ? `${plan.compareYear} → ${plan.year}` : String(plan.year),
     ],
-    [t("planBasis", lang), plan.basis],
     [t("planMetric", lang), plan.metric],
   ] as const;
 }
